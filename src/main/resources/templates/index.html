@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<script src="/js/jquery-2.1.1.min.js"></script>
+    &lt;!&ndash; leyer &ndash;&gt;
+    <script src="/js/layer/layer.js"></script>
+    &lt;!&ndash; jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) &ndash;&gt;
+    <link href="/js/bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet"/>
+    <script src="/js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    &lt;!&ndash; Required Stylesheets &ndash;&gt;
+    <link rel="stylesheet" href="/js/bootstrap/bootstrap-treeview/bootstrap-treeview.min.css">
+    <script src="/js/bootstrap/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+
+    <link rel="stylesheet" href="/js/bootstrap/bootstrap-table/bootstrap-table.css">
+
+    <script src="/js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+    &lt;!&ndash; 汉化文件，放在 bootstrap-table.js 后面 &ndash;&gt;
+    <script src="/js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <link rel="stylesheet" href="/js/bootstrap/bootStrap-addTabs/bootstrap.addtabs.css"></link>
+    <script type="text/javascript" src="/js/bootstrap/bootStrap-addTabs/bootstrap.addtabs.min.js"></script>
+
+    &lt;!&ndash; 时间 &ndash;&gt;
+    <link rel="stylesheet" href="/js/bootstrap/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"></link>
+    <script type="text/javascript" src="/js/bootstrap/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript"
+            src="/js/bootstrap/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    &lt;!&ndash; bootbox &ndash;&gt;
+    <script type="text/javascript" src="/js/bootstrap/bootstrap-bootbox/bootbox.js"></script>
+    &lt;!&ndash; bootstrap-fileinput &ndash;&gt;
+    <link rel="stylesheet" href="/js/bootstrap/bootstrap-fileinput/css/fileinput.css"></link>
+    <script type="text/javascriptt" src="/js/bootstrap/bootstrap-fileinput/js/fileinput.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/bootsrap-fileinput/js/locales/zh.js"></script>-->
+    <script th:src="@{~/js/common/inc.jsp}"></script>
+</head>
+<body>
+<!-- 导航条 -->
+<nav class="navbar navbar-inverse navbar-fixed-top" style="width: 2400px">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">dubbo</a>
+        </div>
+    </div>
+</nav>
+<!-- 内容布局容器 -->
+<div class="container-fluid" style="margin-top:59px;">
+    <div class="row">
+        <div class="col-md-3">
+            <div id="tree"></div>
+        </div>
+        <div class="col-md-9">
+            <div id="myTabs">
+                <div>
+                    <!-- 新选项卡 -->
+                    <ul class="nav nav-tabs">
+                        <li role="presentation" class="active">
+                            <a href="#home" role="tab" data-toggle="tab">欢迎</a>
+                        </li>
+                    </ul>
+                    <!-- 选项卡下内容 -->
+                    <div class="tab-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        queryBootTreeToHtml();
+    })
+
+    function queryBootTreeToHtml() {
+        $.ajax({
+            url: 'http://localhost:8081/region/getTreeAll',
+            type: "POST",
+            success: function (result) {
+                $('#tree').treeview({
+                    data: result,
+                    onNodeSelected: function (event, node) {
+                        console.log(node)
+                        if (node.nodes == null) {
+                            $.addtabs({iframeHeight: 600});
+                            $.addtabs.add({
+                                id: node.id,
+                                title: node.text,
+                                url: "http://localhost:8081/" + node.href,
+                            })
+                        }
+                    }
+                });
+            },
+            error: function () {
+                alert("ajax访问失败了,查看控制台");
+            }
+        })
+    }
+</script>
+</html>
